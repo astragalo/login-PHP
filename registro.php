@@ -1,41 +1,30 @@
-<?php 
-include("datos_de_ensamble.php");
-	$conexion = mysql_connect($host,$user,$pw) or die("Se cayo el sistema \n lo sentimos \a ");
-	mysql_select_db($db,$conexion) or die("Error al entrar a la base de datos \n");
-function quitar($mensaje)
-{
-$mensaje = str_replace("<","<",$mensaje);
-$mensaje = str_replace(">",">",$mensaje);
-$mensaje = str_replace("\'","'",$mensaje);
-$mensaje = str_replace('\"','"',$mensaje);
-$mensaje = str_replace("\\\\","\ ",$mensaje);
-return $mensaje;
+<?php
+include("untitled.php");
+mysql_connect ($dbhost, $dbusername, $dbuserpass);
+mysql_select_db($dbname) or die("Cannot select database");
+if (isset($_POST["username"])) {
+$username = $_POST["username"];
+$password = $_POST["password"];
+$cpassword = $_POST["cpassword"];
+$email = $_POST["email"];
+if($username==NULL|$password==NULL|$cpassword==NULL|$email==NULL) {
+echo "un campo está vacio.";
+}else{
+if($password!=$cpassword) {
+echo "Las contraseñas no coinciden";
+}else{
+$checkuser = mysql_query("SELECT username FROM users WHERE username='$username'");
+$username_exist = mysql_num_rows($checkuser);
+$checkemail = mysql_query("SELECT email FROM users WHERE email='$email'");
+$email_exist = mysql_num_rows($checkemail);
+if ($email_exist>0|$username_exist>0) {
+echo "EL nombre de usuario o la cuenta de correo estan ya en uso";
+}else{
+$query = "INSERT INTO users (username, password, email) VALUES('$username','$password','$email')";
+mysql_query($query) or die(mysql_error());
+echo "El usuario $username ha sido registrado de manera satisfactoria.";
 }
-
-if(trim($HTTP_POST_VARS["nick"]) != "" && trim($HTTP_POST_VARS["email"]) != "")
-{
-$sql = "SELECT ID FROM usuarios WHERE nick='".quitar($HTTP_POST_VARS["nick"])."'";
-$result = mysql_query($sql);
-if($row = mysql_fetch_array($result))
-{
-echo "Error, nick escogido por otro usuario";
 }
-else
-{
-$sql = "INSERT INTO usuarios (nick,password,nombre,email) VALUES (";
-$sql .= "'".quitar($HTTP_POST_VARS["nick"])."'";
-$sql .= ",'".quitar($HTTP_POST_VARS["password"])."'";
-$sql .= ",'".quitar($HTTP_POST_VARS["nombre"])."'";
-$sql .= ",'".quitar($HTTP_POST_VARS["email"])."'";
-$sql .= ")";
-mysql_query($sql);
-echo "Registro exitoso!";
 }
-mysql_free_result($result);
 }
-else
-{
-echo "Debe llenar como minimo los campos de email y password";
-}
-mysql_close();
 ?>

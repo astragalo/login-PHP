@@ -1,15 +1,13 @@
 <?php
-include("datos_de_ensamble.php");
-	$conexion = mysql_connect($host,$user,$pw) or die("Se cayo el sistema \n lo sentimos \a ");
-	mysql_select_db($db,$conexion) or die("Error al entrar a la base de datos \n");
-	include("login.php");
-	if($loginCorrecto) 
-{ 
-echo "Estas identificado en el sistema como ".$nickUsuarioL; 
-} 
-else 
-{ 
-echo "Bienvenido visitante, el sistema no te ha reconocido"; 
+
+include("untitled.php");
+session_start();
+mysql_connect ($dbhost, $dbusername, $dbuserpass);
+mysql_select_db($dbname) or die('Cannot select database');
+if (isset($_SESSION['s_username'])) {
+echo "Bienvenido a mi sitio has ingresado como ".$_SESSION['s_username'].", gracias por la visita!";
+}else{
+echo "Tu no estas autentificado dirígete a login.php o registrate en register.php";
+echo $_SESSION['s_username'];
 }
 ?>
-      
